@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#005baa">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>DART Ticket</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .wallet-screen {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            max-width: none;
+            background-color: #eeeeee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wallet-appbar {
+            background-color: #005baa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+        }
+
+        .wallet-appbar-icon {
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            width: 24px;
+        }
+
+        .wallet-appbar-icon.refresh {
+            text-align: right;
+        }
+
+        .wallet-appbar-title {
+            color: #fff;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .wallet-content {
+            flex: 1;
+            padding: 22px 18px 8px;
+        }
+
+        .wallet-section-label {
+            color: #7a7a7a;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .pass-card {
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .pass-card:active {
+            transform: scale(0.98);
+        }
+
+        .pass-logo {
+            width: 108px;
+            min-width: 108px;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pass-logo-text {
+            color: #005baa;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .pass-logo-text::before {
+            content: "▶";
+            color: #005baa;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .pass-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pass-name {
+            background-color: #113a5e;
+            color: #fff;
+            font-size: 19px;
+            font-weight: 700;
+            padding: 16px 18px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .pass-cta {
+            background-color: #1c6ea8;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .wallet-buy-btn {
+            background-color: #f5a623;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 18px;
+            cursor: pointer;
+        }
+
+        .ticket-container {
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            transform: translateY(40px);
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ticket-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+        }
+
+        .ticket-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.32s ease, visibility 0s;
+        }
+
+        .ticket-overlay.open .ticket-container {
+            transform: translateY(0);
+        }
+
+        .wallet-screen.hidden {
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: 20px;
+            right: 56px;
+            font-size: 20px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 20;
+            transition: opacity 0.22s ease, visibility 0s linear 0.22s;
+        }
+
+        .confirm-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.22s ease, visibility 0s;
+        }
+
+        .confirm-card {
+            background-color: #fff;
+            border-radius: 14px;
+            padding: 26px 24px;
+            width: 100%;
+            max-width: 320px;
+            transform: translateY(12px) scale(0.97);
+            transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .confirm-overlay.open .confirm-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .confirm-body {
+            font-size: 14px;
+            line-height: 1.45;
+            color: #555;
+            margin-bottom: 22px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .confirm-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .confirm-btn.cancel {
+            background-color: #eee;
+            color: #444;
+        }
+
+        .confirm-btn.start {
+            background-color: #005baa;
+            color: #fff;
+        }
+
+        .renew-toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: #222;
+            color: #fff;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 30;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .renew-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        body.fullscreen-active {
+            padding: 0;
+        }
+
+        body.fullscreen-active .ticket-overlay {
+            padding: 0;
+        }
+
+        body.fullscreen-active .ticket-container {
+            max-width: none;
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-align: left;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .circle-container {
+            margin: 80px 0 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .outer-circle {
+            width: 170px;
+            height: 170px;
+            background-color: #0056b3;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: dartTicketPulse 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
+        }
+
+        .inner-circle {
+            width: 110px;
+            height: 110px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dart-text {
+            color: #0056b3;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .dart-text::before {
+            content: "▶";
+            margin-right: 6px;
+            font-size: 11px;
+        }
+
+        .time {
+            font-size: 32px;
+            font-weight: 800;
+            color: #333;
+            margin: 30px 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            white-space: nowrap;
+        }
+
+        .ticket-info {
+            margin-top: 100px;
+            text-align: left;
+        }
+
+        .fare-type {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .location {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .expires {
+            font-size: 16px;
+            color: #666;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+        }
+
+        @keyframes dartTicketPulse {
+            0% {
+                transform: scale(1.0);
+                opacity: 1.0;
+            }
+            50% {
+                transform: scale(1.18);
+                opacity: 0.45;
+            }
+            100% {
+                transform: scale(1.0);
+                opacity: 1.0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wallet-screen" id="walletScreen">
+        <div class="wallet-appbar">
+            <div class="wallet-appbar-icon">☰</div>
+            <div class="wallet-appbar-title">My Passes</div>
+            <div class="wallet-appbar-icon refresh">⟳</div>
+        </div>
+        <div class="wallet-content">
+            <div class="wallet-section-label">Stored Passes</div>
+            <div class="pass-card" id="passCard">
+                <div class="pass-logo">
+                    <div class="pass-logo-text">DDOT</div>
+                </div>
+                <div class="pass-info">
+                    <div class="pass-name">Regional Full Fare 4 Hour</div>
+                    <div class="pass-cta">Tap to use this pass</div>
+                </div>
+            </div>
+        </div>
+        <div class="wallet-buy-btn">BUY PASSES</div>
+    </div>
+
+    <div class="ticket-overlay" id="ticketOverlay">
+    <div class="ticket-container" id="ticketContainer">
+        <div class="close-btn" id="closeBtn">×</div>
+        <div class="fullscreen-btn" id="fullscreenBtn" title="Toggle full screen">⤢</div>
+        
+        <div class="header">
+            <div class="title">DART</div>
+            <div class="subtitle">Show operator your ticket</div>
+        </div>
+
+        <div class="circle-container">
+            <div class="outer-circle">
+                <div class="inner-circle">
+                    <div class="dart-text">DART</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time" id="activationTime">Loading...</div>
+
+        <div class="ticket-info">
+            <div class="fare-type">Regional Full Fare 4 Hour</div>
+            <div class="location">Detroit, MI</div>
+            <div class="expires" id="expirationTime">Expires loading...</div>
+        </div>
+    </div>
+    </div>
+
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-card">
+            <div class="confirm-title">Start this pass?</div>
+            <div class="confirm-body">Your Regional Full Fare 4 Hour pass will start its 4-hour window as soon as you confirm. Only start it when you're ready to ride.</div>
+            <div class="confirm-actions">
+                <div class="confirm-btn cancel" id="confirmCancelBtn">Cancel</div>
+                <div class="confirm-btn start" id="confirmStartBtn">Start Pass</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="renew-toast" id="renewToast">Pass renewed for another 4 hours</div>
+
+    <script>
+        // --- Pass state (persisted so the pass keeps running across reloads) ---
+        const STORAGE_KEY = 'dartPassActivatedAt';
+        const PASS_DURATION_MS = 4 * 60 * 60 * 1000; // 4 hours
+
+        function getActivatedAt() {
+            const v = localStorage.getItem(STORAGE_KEY);
+            return v ? parseInt(v, 10) : null;
+        }
+
+        function setActivatedAt(ts) {
+            localStorage.setItem(STORAGE_KEY, String(ts));
+        }
+
+        function isPassActive() {
+            const at = getActivatedAt();
+            return at !== null && (Date.now() - at) < PASS_DURATION_MS;
+        }
+
+        function startNewPass() {
+            setActivatedAt(Date.now());
+        }
+
+        function updateClock() {
+            const timeElement = document.getElementById('activationTime');
+            if (!timeElement) return;
+
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+
+            const timeString = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+            timeElement.textContent = timeString;
+        }
+
+        function updateExpirationDisplay() {
+            const expElement = document.getElementById('expirationTime');
+            if (!expElement) return;
+
+            const at = getActivatedAt();
+            if (at === null) return;
+
+            const expiration = new Date(at + PASS_DURATION_MS);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            let expHours = expiration.getHours();
+            const expMinutes = expiration.getMinutes();
+            const expAmpm = expHours >= 12 ? 'PM' : 'AM';
+
+            expHours = expHours % 12;
+            expHours = expHours ? expHours : 12;
+
+            const expirationString = `Expires ${months[expiration.getMonth()]} ${expiration.getDate()}, ${expiration.getFullYear()} at ${expHours}:${expMinutes.toString().padStart(2, '0')} ${expAmpm}`;
+            expElement.textContent = expirationString;
+        }
+
+        function updatePassCardCTA() {
+            const cta = document.querySelector('#passCard .pass-cta');
+            if (!cta) return;
+            cta.textContent = isPassActive() ? 'Pass active — tap to view' : 'Tap to use this pass';
+        }
+
+        let renewToastTimeout = null;
+        function showRenewToast() {
+            const toast = document.getElementById('renewToast');
+            if (!toast) return;
+            toast.classList.add('show');
+            if (renewToastTimeout) clearTimeout(renewToastTimeout);
+            renewToastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // If the current pass has expired, silently start a fresh one so the
+        // pass behaves like a real transit pass that just keeps renewing.
+        function checkExpirationAndRenew() {
+            const at = getActivatedAt();
+            if (at !== null && (Date.now() - at) >= PASS_DURATION_MS) {
+                startNewPass();
+                updateExpirationDisplay();
+                updatePassCardCTA();
+                showRenewToast();
+            }
+        }
+
+        // Tick every second: clock, expiration text, and auto-renewal check
+        updateClock();
+        updateExpirationDisplay();
+        updatePassCardCTA();
+        setInterval(() => {
+            updateClock();
+            checkExpirationAndRenew();
+            updateExpirationDisplay();
+        }, 1000);
+
+        // --- Full screen handling ---
+        function requestFS(el) {
+            if (el.requestFullscreen) return el.requestFullscreen();
+            if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+            if (el.msRequestFullscreen) return el.msRequestFullscreen();
+        }
+
+        function exitFS() {
+            if (document.exitFullscreen) return document.exitFullscreen();
+            if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+            if (document.msExitFullscreen) return document.msExitFullscreen();
+        }
+
+        function isFS() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
+        }
+
+        function toggleFullscreen() {
+            if (isFS()) {
+                exitFS();
+            } else {
+                requestFS(document.documentElement);
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fullscreen-active', isFS()));
+        document.addEventListener('webkitfullscreenchange', () => document.body.classList.toggle('fullscreen-active', isFS()));
+
+        document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+
+        // Best-effort: some contexts (PWAs, wrapped native apps) allow this to
+        // succeed with no gesture at all. In a plain browser tab it will be
+        // silently blocked, which is fine — the fallback below covers that.
+        requestFS(document.documentElement);
+
+        // Fallback for plain browser tabs: browsers require a real user
+        // gesture before granting fullscreen, so go fullscreen on the very
+        // first tap/click anywhere on the start page.
+        function autoFullscreenOnFirstInteraction() {
+            if (!isFS()) requestFS(document.documentElement);
+            document.removeEventListener('click', autoFullscreenOnFirstInteraction);
+            document.removeEventListener('touchend', autoFullscreenOnFirstInteraction);
+        }
+        document.addEventListener('click', autoFullscreenOnFirstInteraction);
+        document.addEventListener('touchend', autoFullscreenOnFirstInteraction);
+
+        // Register the service worker so the page qualifies as an installable PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            });
+        }
+
+        // --- Wallet <-> ticket navigation (with browser back-button support) ---
+        const walletScreen = document.getElementById('walletScreen');
+        const ticketOverlay = document.getElementById('ticketOverlay');
+        const confirmOverlay = document.getElementById('confirmOverlay');
+
+        // Give the wallet screen a known base history entry to return to.
+        history.replaceState({ screen: 'wallet' }, '', location.pathname + location.search);
+
+        function openTicketUI() {
+            walletScreen.classList.add('hidden');
+            ticketOverlay.classList.add('open');
+            updateExpirationDisplay();
+            updatePassCardCTA();
+        }
+
+        function closeTicketUI() {
+            ticketOverlay.classList.remove('open');
+            walletScreen.classList.remove('hidden');
+            updatePassCardCTA();
+        }
+
+        // Navigating to the ticket screen also pushes a history entry, so the
+        // device/browser back button naturally returns to the passes screen.
+        function goToTicketScreen() {
+            history.pushState({ screen: 'ticket' }, '', '#ticket');
+            requestFS(document.documentElement);
+            openTicketUI();
+        }
+
+        function showConfirmModal() {
+            confirmOverlay.classList.add('open');
+        }
+
+        function hideConfirmModal() {
+            confirmOverlay.classList.remove('open');
+        }
+
+        function handlePassCardTap() {
+            if (isPassActive()) {
+                // Pass already running — just view it, no need to confirm again.
+                goToTicketScreen();
+            } else {
+                showConfirmModal();
+            }
+        }
+
+        document.getElementById('passCard').addEventListener('click', handlePassCardTap);
+
+        document.getElementById('confirmStartBtn').addEventListener('click', () => {
+            hideConfirmModal();
+            startNewPass();
+            updatePassCardCTA();
+            goToTicketScreen();
+        });
+
+        document.getElementById('confirmCancelBtn').addEventListener('click', hideConfirmModal);
+
+        // Closing via the X button goes through history.back() so the
+        // back-button and X-button paths stay in sync.
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            history.back();
+        });
+
+        window.addEventListener('popstate', (event) => {
+            const state = event.state;
+            if (state && state.screen === 'ticket') {
+                if (!ticketOverlay.classList.contains('open')) {
+                    requestFS(document.documentElement);
+                    openTicketUI();
+                }
+            } else {
+                if (ticketOverlay.classList.contains('open')) {
+                    if (isFS()) exitFS();
+                    closeTicketUI();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
