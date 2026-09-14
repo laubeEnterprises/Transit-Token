@@ -81,6 +81,14 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
             transition: transform 0.15s ease, box-shadow 0.15s ease;
+            margin-bottom: 14px;
+        }
+
+        .wallet-empty-state {
+            color: #777;
+            font-size: 15px;
+            text-align: center;
+            padding: 40px 20px;
         }
 
         .pass-card:active {
@@ -112,6 +120,7 @@
 
         .pass-info {
             flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
         }
@@ -134,6 +143,44 @@
             font-weight: 500;
             text-align: center;
             padding: 10px;
+        }
+
+        .pass-timeleft {
+            display: none;
+            min-width: 92px;
+            background-color: #113a5e;
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px 8px;
+        }
+
+        .pass-card.active .pass-timeleft {
+            display: flex;
+        }
+
+        .pass-timeleft-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+
+        .pass-timeleft-value {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .pass-timeleft-unit {
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            margin-top: 2px;
         }
 
         .wallet-buy-btn {
@@ -300,6 +347,324 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* --- Buy Passes flow --- */
+        .buy-screen,
+        .checkout-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #eeeeee;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 15;
+            transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+        }
+
+        .buy-screen.open,
+        .checkout-screen.open {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.28s ease, visibility 0s;
+        }
+
+        .buy-appbar {
+            background-color: #0d3b63;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            flex: none;
+        }
+
+        .buy-appbar-icon {
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            width: 26px;
+            cursor: pointer;
+        }
+
+        .buy-appbar-icon.right {
+            text-align: right;
+        }
+
+        .buy-appbar-title {
+            color: #fff;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .buy-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 22px 18px 40px;
+        }
+
+        .buy-agency-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .buy-agency-logo {
+            width: 108px;
+            min-width: 108px;
+            height: 108px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .buy-agency-info {
+            text-align: left;
+        }
+
+        .buy-agency-name {
+            color: #113a5e;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .buy-agency-location {
+            color: #113a5e;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .buy-section {
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        .buy-section-header {
+            background-color: #0d3b63;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .buy-reset {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .option-row:last-child {
+            border-bottom: none;
+        }
+
+        .option-radio {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            border: 2px solid #1b7a4d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-radio.selected {
+            background-color: #1b7a4d;
+        }
+
+        .option-radio.selected::after {
+            content: "✓";
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .option-label {
+            flex: 1;
+            color: #113a5e;
+            font-weight: 700;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .option-label .restricted {
+            color: #c0392b;
+        }
+
+        .option-info-btn {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            border: 2px solid #1c8adb;
+            color: #1c8adb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .buy-summary {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 18px 16px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        }
+
+        .buy-summary-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .buy-summary-icon {
+            font-size: 22px;
+            transform: rotate(-45deg);
+        }
+
+        .buy-summary-name {
+            flex: 1;
+            color: #113a5e;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .buy-summary-price {
+            color: #113a5e;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .buy-summary-btn {
+            text-align: center;
+            padding: 14px;
+            border-radius: 4px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .buy-summary-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .buy-summary-btn.secondary {
+            background-color: #e6e6e6;
+            color: #113a5e;
+        }
+
+        .buy-summary-btn.primary {
+            background-color: #1b7a4d;
+            color: #fff;
+        }
+
+        .checkout-content {
+            flex: 1;
+            padding: 40px 24px 20px;
+            text-align: center;
+        }
+
+        .checkout-price {
+            font-size: 52px;
+            font-weight: 800;
+            color: #113a5e;
+            margin-bottom: 30px;
+        }
+
+        .checkout-item {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            text-align: left;
+            margin-bottom: 34px;
+        }
+
+        .checkout-logo {
+            width: 88px;
+            min-width: 88px;
+            height: 88px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .checkout-name {
+            color: #113a5e;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .checkout-terms {
+            color: #444;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .checkout-terms a {
+            color: #1b7a4d;
+        }
+
+        .checkout-payment {
+            flex: none;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            padding: 18px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .checkout-payment-icon {
+            font-size: 22px;
+        }
+
+        .checkout-payment.set #checkoutPaymentLabel {
+            color: #1b7a4d;
+            font-weight: 700;
+        }
+
+        .checkout-continue-bar {
+            flex: none;
+            background-color: #1b7a4d;
+            color: #fff;
+            text-align: center;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+
         body.fullscreen-active {
             padding: 0;
         }
@@ -443,17 +808,89 @@
         </div>
         <div class="wallet-content">
             <div class="wallet-section-label">Stored Passes</div>
-            <div class="pass-card" id="passCard">
-                <div class="pass-logo">
-                    <div class="pass-logo-text">DDOT</div>
+            <div id="storedPassesList"></div>
+        </div>
+        <div class="wallet-buy-btn" id="buyPassesBtn">BUY PASSES</div>
+    </div>
+
+    <div class="buy-screen" id="buyScreen">
+        <div class="buy-appbar">
+            <div class="buy-appbar-icon" id="buyBackBtn">←</div>
+            <div class="buy-appbar-title">Buy passes</div>
+            <div class="buy-appbar-icon right" id="cartIconBtn">🛒</div>
+        </div>
+        <div class="buy-content">
+            <div class="buy-agency-card">
+                <div class="buy-agency-logo">
+                    <div class="pass-logo-text">DART</div>
                 </div>
-                <div class="pass-info">
-                    <div class="pass-name">Regional Full Fare 4 Hour</div>
-                    <div class="pass-cta">Tap to use this pass</div>
+                <div class="buy-agency-info">
+                    <div class="buy-agency-name">DART</div>
+                    <div class="buy-agency-location">Detroit, MI</div>
                 </div>
             </div>
+
+            <div class="buy-section" id="buySectionService">
+                <div class="buy-section-header">
+                    <span id="serviceHeaderLabel">Choose your service</span>
+                    <span class="buy-reset" id="serviceResetBtn" style="display:none;">RESET</span>
+                </div>
+                <div id="serviceBody"></div>
+            </div>
+
+            <div class="buy-section" id="buySectionRider" style="display:none;">
+                <div class="buy-section-header">
+                    <span id="riderHeaderLabel">Choose your rider</span>
+                    <span class="buy-reset" id="riderResetBtn" style="display:none;">RESET</span>
+                </div>
+                <div id="riderBody"></div>
+            </div>
+
+            <div class="buy-section" id="buySectionFare" style="display:none;">
+                <div class="buy-section-header">
+                    <span id="fareHeaderLabel">Choose your fare</span>
+                    <span class="buy-reset" id="fareResetBtn" style="display:none;">RESET</span>
+                </div>
+                <div id="fareBody"></div>
+            </div>
+
+            <div class="buy-summary" id="buySummary" style="display:none;">
+                <div class="buy-summary-row">
+                    <div class="buy-summary-icon">🎫</div>
+                    <div class="buy-summary-name" id="buySummaryName"></div>
+                    <div class="buy-summary-price" id="buySummaryPrice"></div>
+                </div>
+                <div class="buy-summary-btn secondary" id="addToCartBtn">ADD TO CART</div>
+                <div class="buy-summary-btn primary" id="buyNowBtn">BUY NOW</div>
+            </div>
         </div>
-        <div class="wallet-buy-btn">BUY PASSES</div>
+    </div>
+
+    <div class="checkout-screen" id="checkoutScreen">
+        <div class="buy-appbar">
+            <div class="buy-appbar-icon" id="checkoutBackBtn">←</div>
+            <div class="buy-appbar-title">Buy passes</div>
+            <div class="buy-appbar-icon right"></div>
+        </div>
+        <div class="checkout-content">
+            <div class="checkout-price" id="checkoutPrice">$0.00</div>
+            <div class="checkout-item">
+                <div class="checkout-logo">
+                    <div class="pass-logo-text">DART</div>
+                </div>
+                <div class="checkout-name" id="checkoutName"></div>
+            </div>
+            <div class="checkout-terms">
+                By confirming, you agree to the applicable DART terms and policies.
+                <br><br>
+                Purchased passes are saved to your account for later use. To start using your pass, an internet connection is required.
+            </div>
+        </div>
+        <div class="checkout-payment" id="checkoutPaymentBtn">
+            <span class="checkout-payment-icon">💳</span>
+            <span id="checkoutPaymentLabel">Set payment</span>
+        </div>
+        <div class="checkout-continue-bar" id="checkoutContinueBtn">CONTINUE</div>
     </div>
 
     <div class="ticket-overlay" id="ticketOverlay">
@@ -477,7 +914,7 @@
         <div class="time" id="activationTime">Loading...</div>
 
         <div class="ticket-info">
-            <div class="fare-type">Regional Full Fare 4 Hour</div>
+            <div class="fare-type" id="fareTypeLabel">Regional Full Fare 4 Hour</div>
             <div class="location">Detroit, MI</div>
             <div class="expires" id="expirationTime">Expires loading...</div>
         </div>
@@ -495,29 +932,71 @@
         </div>
     </div>
 
-    <div class="renew-toast" id="renewToast">Pass renewed for another 4 hours</div>
+    <div class="confirm-overlay" id="infoOverlay">
+        <div class="confirm-card">
+            <div class="confirm-body" id="infoBody"></div>
+            <div class="confirm-actions">
+                <div class="confirm-btn start" id="infoCloseBtn" style="flex:none; padding-left:28px; padding-right:28px; margin-left:auto;">Close</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="renew-toast" id="renewToast"></div>
 
     <script>
-        // --- Pass state (persisted so the pass keeps running across reloads) ---
-        const STORAGE_KEY = 'dartPassActivatedAt';
-        const PASS_DURATION_MS = 4 * 60 * 60 * 1000; // 4 hours
+        // --- Pass storage: an array of purchased passes, each independent ---
+        const PASSES_KEY = 'dartPasses';
+        const DEFAULT_PASS = { name: 'Regional Full Fare 4 Hour', durationMs: 4 * 60 * 60 * 1000 };
 
-        function getActivatedAt() {
-            const v = localStorage.getItem(STORAGE_KEY);
-            return v ? parseInt(v, 10) : null;
+        function generateId() {
+            return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
         }
 
-        function setActivatedAt(ts) {
-            localStorage.setItem(STORAGE_KEY, String(ts));
+        function getPasses() {
+            const raw = localStorage.getItem(PASSES_KEY);
+            if (raw) {
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) { /* fall through to seed default */ }
+            }
+            // First run (or corrupted storage): seed with one unactivated default pass.
+            const seeded = [{ id: generateId(), name: DEFAULT_PASS.name, durationMs: DEFAULT_PASS.durationMs, activatedAt: null }];
+            setPasses(seeded);
+            return seeded;
         }
 
-        function isPassActive() {
-            const at = getActivatedAt();
-            return at !== null && (Date.now() - at) < PASS_DURATION_MS;
+        function setPasses(arr) {
+            localStorage.setItem(PASSES_KEY, JSON.stringify(arr));
         }
 
-        function startNewPass() {
-            setActivatedAt(Date.now());
+        function getPass(id) {
+            return getPasses().find((p) => p.id === id) || null;
+        }
+
+        function addPass(name, durationMs) {
+            const passes = getPasses();
+            const pass = { id: generateId(), name, durationMs, activatedAt: null };
+            passes.push(pass);
+            setPasses(passes);
+            return pass;
+        }
+
+        function activatePass(id) {
+            const passes = getPasses();
+            const pass = passes.find((p) => p.id === id);
+            if (pass) {
+                pass.activatedAt = Date.now();
+                setPasses(passes);
+            }
+        }
+
+        function removePass(id) {
+            setPasses(getPasses().filter((p) => p.id !== id));
+        }
+
+        function isPassRecordActive(pass) {
+            return pass.activatedAt !== null && (Date.now() - pass.activatedAt) < pass.durationMs;
         }
 
         function updateClock() {
@@ -541,10 +1020,10 @@
             const expElement = document.getElementById('expirationTime');
             if (!expElement) return;
 
-            const at = getActivatedAt();
-            if (at === null) return;
+            const pass = currentTicketPassId ? getPass(currentTicketPassId) : null;
+            if (!pass || pass.activatedAt === null) return;
 
-            const expiration = new Date(at + PASS_DURATION_MS);
+            const expiration = new Date(pass.activatedAt + pass.durationMs);
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -559,41 +1038,120 @@
             expElement.textContent = expirationString;
         }
 
-        function updatePassCardCTA() {
-            const cta = document.querySelector('#passCard .pass-cta');
-            if (!cta) return;
-            cta.textContent = isPassActive() ? 'Pass active — tap to view' : 'Tap to use this pass';
+        function formatTimeLeft(msRemaining) {
+            const totalMinutes = Math.max(0, Math.ceil(msRemaining / 60000));
+            if (totalMinutes >= 1440) {
+                const days = Math.floor(totalMinutes / 1440);
+                return { value: days, unit: days === 1 ? 'DAY' : 'DAYS' };
+            }
+            if (totalMinutes >= 60) {
+                const hours = Math.floor(totalMinutes / 60);
+                return { value: hours, unit: hours === 1 ? 'HOUR' : 'HOURS' };
+            }
+            return { value: totalMinutes, unit: totalMinutes === 1 ? 'MINUTE' : 'MINUTES' };
         }
 
-        let renewToastTimeout = null;
-        function showRenewToast() {
+        // "4 hours" / "1 day" style wording for sentences
+        function durationWords(ms) {
+            const { value, unit } = formatTimeLeft(ms);
+            return `${value} ${unit.toLowerCase()}`;
+        }
+
+        // "4-hour" / "31-day" style adjective for "X window" phrasing
+        function durationAdj(ms) {
+            const { value, unit } = formatTimeLeft(ms);
+            return `${value}-${unit.toLowerCase().replace(/s$/, '')}`;
+        }
+
+        function passRowHTML(pass) {
+            const active = isPassRecordActive(pass);
+            let timeLeftHTML = '';
+            if (active) {
+                const msRemaining = (pass.activatedAt + pass.durationMs) - Date.now();
+                const { value, unit } = formatTimeLeft(msRemaining);
+                timeLeftHTML = `
+                    <div class="pass-timeleft">
+                        <div class="pass-timeleft-label">Time left</div>
+                        <div class="pass-timeleft-value">${value}</div>
+                        <div class="pass-timeleft-unit">${unit}</div>
+                    </div>`;
+            }
+            return `
+                <div class="pass-card ${active ? 'active' : ''}" data-pass-id="${pass.id}">
+                    <div class="pass-logo">
+                        <div class="pass-logo-text">DART</div>
+                    </div>
+                    <div class="pass-info">
+                        <div class="pass-name">${pass.name}</div>
+                        <div class="pass-cta">${active ? 'Pass active — tap to view' : 'Tap to use this pass'}</div>
+                    </div>
+                    ${timeLeftHTML}
+                </div>`;
+        }
+
+        function renderWallet() {
+            const list = document.getElementById('storedPassesList');
+            if (!list) return;
+            const passes = getPasses();
+            if (passes.length === 0) {
+                list.innerHTML = '<div class="wallet-empty-state">No stored passes yet. Tap Buy Passes to get one.</div>';
+                return;
+            }
+            list.innerHTML = passes.map(passRowHTML).join('');
+        }
+
+        document.getElementById('storedPassesList').addEventListener('click', (e) => {
+            const card = e.target.closest('.pass-card');
+            if (!card) return;
+            const id = card.dataset.passId;
+            const pass = getPass(id);
+            if (!pass) return;
+            if (isPassRecordActive(pass)) {
+                currentTicketPassId = id;
+                navigateTo('ticket');
+            } else {
+                pendingActivatePassId = id;
+                showConfirmModal(pass);
+            }
+        });
+
+        let genericToastTimeout = null;
+        function showToast(message) {
             const toast = document.getElementById('renewToast');
             if (!toast) return;
+            toast.textContent = message;
             toast.classList.add('show');
-            if (renewToastTimeout) clearTimeout(renewToastTimeout);
-            renewToastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+            if (genericToastTimeout) clearTimeout(genericToastTimeout);
+            genericToastTimeout = setTimeout(() => toast.classList.remove('show'), 2400);
         }
 
-        // If the current pass has expired, silently start a fresh one so the
-        // pass behaves like a real transit pass that just keeps renewing.
-        function checkExpirationAndRenew() {
-            const at = getActivatedAt();
-            if (at !== null && (Date.now() - at) >= PASS_DURATION_MS) {
-                startNewPass();
-                updateExpirationDisplay();
-                updatePassCardCTA();
-                showRenewToast();
+        // Remove any passes that have run out their full duration. If the pass
+        // currently on screen in the ticket view just expired, kick back to the
+        // wallet so the person isn't left staring at a dead ticket.
+        function checkExpirations() {
+            const passes = getPasses();
+            const stillValid = passes.filter((p) => p.activatedAt === null || (Date.now() - p.activatedAt) < p.durationMs);
+            if (stillValid.length !== passes.length) {
+                setPasses(stillValid);
+                if (currentTicketPassId && !stillValid.find((p) => p.id === currentTicketPassId)) {
+                    currentTicketPassId = null;
+                    if (ticketOverlay.classList.contains('open')) {
+                        showToast('Pass expired');
+                        goBack();
+                    }
+                }
+                renderWallet();
             }
         }
 
-        // Tick every second: clock, expiration text, and auto-renewal check
+        // Tick every second: clock, ticket expiration text, and expiry sweep
         updateClock();
-        updateExpirationDisplay();
-        updatePassCardCTA();
+        renderWallet();
         setInterval(() => {
             updateClock();
-            checkExpirationAndRenew();
+            checkExpirations();
             updateExpirationDisplay();
+            renderWallet();
         }, 1000);
 
         // --- Full screen handling ---
@@ -649,36 +1207,111 @@
             });
         }
 
-        // --- Wallet <-> ticket navigation (with browser back-button support) ---
+        // --- Screen navigation (wallet / buy / ticket / checkout), with
+        // browser/device back-button support via the History API ---
         const walletScreen = document.getElementById('walletScreen');
         const ticketOverlay = document.getElementById('ticketOverlay');
         const confirmOverlay = document.getElementById('confirmOverlay');
+        const buyScreen = document.getElementById('buyScreen');
+        const checkoutScreen = document.getElementById('checkoutScreen');
+
+        let currentTicketPassId = null;
+        let pendingActivatePassId = null;
+
+        // Some embedded/sandboxed contexts (e.g. a srcdoc preview iframe) block
+        // the History API outright and throw on pushState/replaceState. Detect
+        // that once, up front, and fall back to a plain in-memory nav stack so
+        // the app degrades gracefully instead of crashing. On a normally
+        // hosted page this stays true and real back-button support works as usual.
+        let historyApiUsable = true;
+        let navStack = ['wallet'];
+
+        function safeReplaceState(state, url) {
+            try {
+                history.replaceState(state, '', url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function safePushState(state, url) {
+            try {
+                history.pushState(state, '', url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
 
         // Give the wallet screen a known base history entry to return to.
-        history.replaceState({ screen: 'wallet' }, '', location.pathname + location.search);
+        historyApiUsable = safeReplaceState({ screen: 'wallet' }, location.pathname + location.search);
 
-        function openTicketUI() {
-            walletScreen.classList.add('hidden');
-            ticketOverlay.classList.add('open');
-            updateExpirationDisplay();
-            updatePassCardCTA();
+        function renderScreen(screen) {
+            walletScreen.classList.toggle('hidden', screen !== 'wallet');
+            buyScreen.classList.toggle('open', screen === 'buy');
+            ticketOverlay.classList.toggle('open', screen === 'ticket');
+            checkoutScreen.classList.toggle('open', screen === 'checkout');
+
+            if (screen === 'ticket') {
+                const pass = currentTicketPassId ? getPass(currentTicketPassId) : null;
+                const fareTypeEl = document.getElementById('fareTypeLabel');
+                if (fareTypeEl && pass) fareTypeEl.textContent = pass.name;
+                updateExpirationDisplay();
+            }
+            if (screen === 'wallet') renderWallet();
         }
 
-        function closeTicketUI() {
-            ticketOverlay.classList.remove('open');
-            walletScreen.classList.remove('hidden');
-            updatePassCardCTA();
+        function navigateTo(screen) {
+            if (historyApiUsable) {
+                historyApiUsable = safePushState({ screen }, '#' + screen);
+            }
+            if (!historyApiUsable) {
+                navStack.push(screen);
+            }
+            if (screen === 'ticket') requestFS(document.documentElement);
+            renderScreen(screen);
         }
 
-        // Navigating to the ticket screen also pushes a history entry, so the
-        // device/browser back button naturally returns to the passes screen.
-        function goToTicketScreen() {
-            history.pushState({ screen: 'ticket' }, '', '#ticket');
-            requestFS(document.documentElement);
-            openTicketUI();
+        function goBack() {
+            if (historyApiUsable) {
+                history.back();
+                return;
+            }
+            if (navStack.length > 1) navStack.pop();
+            const screen = navStack[navStack.length - 1];
+            if (screen !== 'ticket' && isFS()) exitFS();
+            renderScreen(screen);
         }
 
-        function showConfirmModal() {
+        function goBackScreens(n) {
+            if (historyApiUsable) {
+                history.go(-n);
+                return;
+            }
+            for (let i = 0; i < n; i++) {
+                if (navStack.length > 1) navStack.pop();
+            }
+            renderScreen(navStack[navStack.length - 1]);
+        }
+
+        window.addEventListener('popstate', (event) => {
+            if (!historyApiUsable) return;
+            const state = event.state;
+            const screen = (state && state.screen) ? state.screen : 'wallet';
+            if (screen === 'ticket') {
+                requestFS(document.documentElement);
+            } else if (ticketOverlay.classList.contains('open') && isFS()) {
+                exitFS();
+            }
+            renderScreen(screen);
+        });
+
+        function showConfirmModal(pass) {
+            const body = document.querySelector('#confirmOverlay .confirm-body');
+            if (body) {
+                body.textContent = `Your ${pass.name} pass will start its ${durationAdj(pass.durationMs)} window as soon as you confirm. Only start it when you're ready to ride.`;
+            }
             confirmOverlay.classList.add('open');
         }
 
@@ -686,46 +1319,236 @@
             confirmOverlay.classList.remove('open');
         }
 
-        function handlePassCardTap() {
-            if (isPassActive()) {
-                // Pass already running — just view it, no need to confirm again.
-                goToTicketScreen();
+        document.getElementById('confirmStartBtn').addEventListener('click', () => {
+            hideConfirmModal();
+            if (pendingActivatePassId) {
+                activatePass(pendingActivatePassId);
+                currentTicketPassId = pendingActivatePassId;
+                pendingActivatePassId = null;
+                navigateTo('ticket');
+            }
+        });
+
+        document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+            pendingActivatePassId = null;
+            hideConfirmModal();
+        });
+
+        // Closing via the X button goes through goBack() so the back-button
+        // and X-button paths stay in sync (and work even when the History
+        // API itself is unavailable, e.g. inside a sandboxed preview).
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            goBack();
+        });
+
+        document.getElementById('buyPassesBtn').addEventListener('click', () => {
+            resetBuyState();
+            renderBuyFlow();
+            navigateTo('buy');
+        });
+
+        document.getElementById('buyBackBtn').addEventListener('click', () => goBack());
+        document.getElementById('checkoutBackBtn').addEventListener('click', () => goBack());
+
+        document.getElementById('cartIconBtn').addEventListener('click', () => {
+            showToast('Cart is empty');
+        });
+
+        // --- Buy Passes flow data & state ---
+        const SERVICES = [
+            { id: 'regional', label: 'Regional (DDOT + SMART)', short: 'Regional',
+              info: 'Regional passes are valid for rides on DDOT and SMART buses.' },
+            { id: 'ddot', label: 'DDOT', short: 'DDOT',
+              info: 'DDOT passes are valid for rides on DDOT buses only.' }
+        ];
+
+        const RIDERS = [
+            { id: 'full', label: 'Full Fare', short: 'Full Fare',
+              info: 'Standard fare for general riders.' },
+            { id: 'reduced', label: 'Reduced', labelSuffix: '[Pre-Approved Riders Only]', short: 'Reduced', restricted: true,
+              info: 'Reduced fare is available to pre-approved riders only, such as seniors, students, or riders with disabilities.' },
+            { id: 'wayneride', label: 'WayneRide Fall 2026', labelSuffix: '[Restricted]', short: 'WayneRide Fall 2026', restricted: true,
+              info: 'WayneRide passes are restricted to riders enrolled in the WayneRide program for the Fall 2026 term.' }
+        ];
+
+        const FARES = [
+            { id: '4h', label: '4 Hour', price: 2.00, durationMs: 4 * 60 * 60 * 1000,
+              info: 'Valid for unlimited rides for 4 hours from activation.' },
+            { id: '24h', label: '24 Hour', price: 5.00, durationMs: 24 * 60 * 60 * 1000,
+              info: 'Valid for unlimited rides for 24 hours from activation.' },
+            { id: '7d', label: '7 Day', price: 22.00, durationMs: 7 * 24 * 60 * 60 * 1000,
+              info: 'Valid for unlimited rides for 7 days from activation.' },
+            { id: '31d', label: '31 Day', price: 70.00, durationMs: 31 * 24 * 60 * 60 * 1000,
+              info: 'Valid for unlimited rides for 31 days from activation.' }
+        ];
+
+        let buyState = { service: null, rider: null, fare: null };
+
+        function resetBuyState() {
+            buyState = { service: null, rider: null, fare: null };
+        }
+
+        function findService(id) { return SERVICES.find((s) => s.id === id); }
+        function findRider(id) { return RIDERS.find((r) => r.id === id); }
+        function findFare(id) { return FARES.find((f) => f.id === id); }
+
+        function optionRowHTML(item, kind, selected, displayLabel) {
+            const suffix = item.labelSuffix ? ` <span class="restricted">${item.labelSuffix}</span>` : '';
+            return `
+              <div class="option-row" data-kind="${kind}" data-id="${item.id}">
+                <div class="option-radio ${selected ? 'selected' : ''}"></div>
+                <div class="option-label">${displayLabel}${suffix}</div>
+                <div class="option-info-btn" data-info-kind="${kind}" data-info-id="${item.id}">ⓘ</div>
+              </div>`;
+        }
+
+        function renderBuyFlow() {
+            const serviceHeaderLabel = document.getElementById('serviceHeaderLabel');
+            const serviceReset = document.getElementById('serviceResetBtn');
+            const serviceBody = document.getElementById('serviceBody');
+
+            if (buyState.service) {
+                const svc = findService(buyState.service);
+                serviceHeaderLabel.textContent = 'Service';
+                serviceReset.style.display = '';
+                serviceBody.innerHTML = optionRowHTML(svc, 'service', true, svc.label);
             } else {
-                showConfirmModal();
+                serviceHeaderLabel.textContent = 'Choose your service';
+                serviceReset.style.display = 'none';
+                serviceBody.innerHTML = SERVICES.map((s) => optionRowHTML(s, 'service', false, s.label)).join('');
+            }
+
+            const riderSection = document.getElementById('buySectionRider');
+            if (buyState.service) {
+                riderSection.style.display = '';
+                const riderHeaderLabel = document.getElementById('riderHeaderLabel');
+                const riderReset = document.getElementById('riderResetBtn');
+                const riderBody = document.getElementById('riderBody');
+                if (buyState.rider) {
+                    const rdr = findRider(buyState.rider);
+                    riderHeaderLabel.textContent = 'Rider';
+                    riderReset.style.display = '';
+                    riderBody.innerHTML = optionRowHTML(rdr, 'rider', true, rdr.label);
+                } else {
+                    riderHeaderLabel.textContent = 'Choose your rider';
+                    riderReset.style.display = 'none';
+                    riderBody.innerHTML = RIDERS.map((r) => optionRowHTML(r, 'rider', false, r.label)).join('');
+                }
+            } else {
+                riderSection.style.display = 'none';
+            }
+
+            const fareSection = document.getElementById('buySectionFare');
+            if (buyState.service && buyState.rider) {
+                fareSection.style.display = '';
+                const fareHeaderLabel = document.getElementById('fareHeaderLabel');
+                const fareReset = document.getElementById('fareResetBtn');
+                const fareBody = document.getElementById('fareBody');
+                if (buyState.fare) {
+                    const fr = findFare(buyState.fare);
+                    fareHeaderLabel.textContent = 'Fare';
+                    fareReset.style.display = '';
+                    fareBody.innerHTML = optionRowHTML(fr, 'fare', true, fr.label);
+                } else {
+                    fareHeaderLabel.textContent = 'Choose your fare';
+                    fareReset.style.display = 'none';
+                    fareBody.innerHTML = FARES.map((f) => optionRowHTML(f, 'fare', false, `${f.label} ($${f.price.toFixed(2)})`)).join('');
+                }
+            } else {
+                fareSection.style.display = 'none';
+            }
+
+            const summary = document.getElementById('buySummary');
+            if (buyState.service && buyState.rider && buyState.fare) {
+                summary.style.display = '';
+                const svc = findService(buyState.service);
+                const rdr = findRider(buyState.rider);
+                const fr = findFare(buyState.fare);
+                document.getElementById('buySummaryName').textContent = `${svc.short} ${rdr.short} ${fr.label}`;
+                document.getElementById('buySummaryPrice').textContent = `$${fr.price.toFixed(2)}`;
+            } else {
+                summary.style.display = 'none';
             }
         }
 
-        document.getElementById('passCard').addEventListener('click', handlePassCardTap);
+        function showInfoModal(text) {
+            document.getElementById('infoBody').textContent = text;
+            document.getElementById('infoOverlay').classList.add('open');
+        }
 
-        document.getElementById('confirmStartBtn').addEventListener('click', () => {
-            hideConfirmModal();
-            startNewPass();
-            updatePassCardCTA();
-            goToTicketScreen();
+        document.getElementById('infoCloseBtn').addEventListener('click', () => {
+            document.getElementById('infoOverlay').classList.remove('open');
         });
 
-        document.getElementById('confirmCancelBtn').addEventListener('click', hideConfirmModal);
-
-        // Closing via the X button goes through history.back() so the
-        // back-button and X-button paths stay in sync.
-        document.getElementById('closeBtn').addEventListener('click', () => {
-            history.back();
-        });
-
-        window.addEventListener('popstate', (event) => {
-            const state = event.state;
-            if (state && state.screen === 'ticket') {
-                if (!ticketOverlay.classList.contains('open')) {
-                    requestFS(document.documentElement);
-                    openTicketUI();
-                }
-            } else {
-                if (ticketOverlay.classList.contains('open')) {
-                    if (isFS()) exitFS();
-                    closeTicketUI();
-                }
+        buyScreen.addEventListener('click', (e) => {
+            const infoBtn = e.target.closest('[data-info-kind]');
+            if (infoBtn) {
+                const kind = infoBtn.dataset.infoKind;
+                const id = infoBtn.dataset.infoId;
+                const item = kind === 'service' ? findService(id) : kind === 'rider' ? findRider(id) : findFare(id);
+                if (item) showInfoModal(item.info);
+                return;
+            }
+            const row = e.target.closest('.option-row');
+            if (row) {
+                const kind = row.dataset.kind;
+                const id = row.dataset.id;
+                if (kind === 'service') { buyState.service = id; buyState.rider = null; buyState.fare = null; }
+                else if (kind === 'rider') { buyState.rider = id; buyState.fare = null; }
+                else if (kind === 'fare') { buyState.fare = id; }
+                renderBuyFlow();
             }
         });
+
+        document.getElementById('serviceResetBtn').addEventListener('click', () => {
+            buyState = { service: null, rider: null, fare: null };
+            renderBuyFlow();
+        });
+        document.getElementById('riderResetBtn').addEventListener('click', () => {
+            buyState.rider = null;
+            buyState.fare = null;
+            renderBuyFlow();
+        });
+        document.getElementById('fareResetBtn').addEventListener('click', () => {
+            buyState.fare = null;
+            renderBuyFlow();
+        });
+
+        document.getElementById('addToCartBtn').addEventListener('click', () => {
+            showToast('Added to cart');
+        });
+
+        document.getElementById('buyNowBtn').addEventListener('click', () => {
+            const svc = findService(buyState.service);
+            const rdr = findRider(buyState.rider);
+            const fr = findFare(buyState.fare);
+            document.getElementById('checkoutName').textContent = `${svc.short} ${rdr.short} ${fr.label}`;
+            document.getElementById('checkoutPrice').textContent = `$${fr.price.toFixed(2)}`;
+            document.getElementById('checkoutPaymentLabel').textContent = 'Set payment (optional)';
+            document.getElementById('checkoutPaymentBtn').classList.remove('set');
+            navigateTo('checkout');
+        });
+
+        document.getElementById('checkoutPaymentBtn').addEventListener('click', () => {
+            const btn = document.getElementById('checkoutPaymentBtn');
+            const nowSet = !btn.classList.contains('set');
+            btn.classList.toggle('set', nowSet);
+            document.getElementById('checkoutPaymentLabel').textContent = nowSet ? 'Visa •••• 4242' : 'Set payment (optional)';
+        });
+
+        // Purchasing always creates a new saved pass in the wallet — no
+        // payment method is required to complete it.
+        document.getElementById('checkoutContinueBtn').addEventListener('click', () => {
+            const svc = findService(buyState.service);
+            const rdr = findRider(buyState.rider);
+            const fr = findFare(buyState.fare);
+            addPass(`${svc.short} ${rdr.short} ${fr.label}`, fr.durationMs);
+            resetBuyState();
+            showToast('Purchase successful');
+            // Pop back past the checkout and buy screens to the wallet in one go.
+            goBackScreens(2);
+        });
+
     </script>
 </body>
 </html>
